@@ -1,0 +1,37 @@
+[
+  {
+    "id": "TC01",
+    "type": "direct_query",
+    "question": "Chào bạn, bạn có thể giới thiệu quy định chung về thời gian làm việc và số ngày phép năm tiêu chuẩn của nhân viên VinFast không?",
+    "expected_behavior": "Agent trả lời trực tiếp từ kiến thức quy chế nhân sự chung, không cần gọi bất kỳ Tool nào.",
+    "complexity": "Low"
+  },
+  {
+    "id": "TC02",
+    "type": "single_tool_query",
+    "question": "Hãy tra cứu thông tin nhân sự và số ngày phép còn lại của nhân viên VF2026001.",
+    "expected_behavior": "Agent nhận diện nhu cầu tra cứu hồ sơ, tự động phát sinh Tool Call 'hr_employee_query' với mã nhân viên VF2026001.",
+    "complexity": "Medium"
+  },
+  {
+    "id": "TC03",
+    "type": "leave_request_booking",
+    "question": "Tôi muốn tạo đơn xin nghỉ phép năm 2 ngày từ ngày 20/09/2026 cho nhân viên VF2026001 vì lý do việc gia đình.",
+    "expected_behavior": "Agent tự động phát sinh Tool Call 'submit_leave_request' với đầy đủ mã nhân viên VF2026001, ngày bắt đầu 20/09/2026, số ngày nghỉ 2 và lý do việc gia đình.",
+    "complexity": "Medium"
+  },
+  {
+    "id": "TC04",
+    "type": "multi_step_reasoning",
+    "question": "Nhân viên VF2026002 hiện còn bao nhiêu ngày phép năm và ai là người quản lý trực tiếp? Hãy tra cứu thông tin rồi tạo đơn xin nghỉ phép 1 ngày vào ngày 25/09/2026 gửi cho người quản lý đó.",
+    "expected_behavior": "Agent thực hiện chuỗi suy luận ReAct: Tra cứu thông tin hồ sơ nhân viên VF2026002 trước để lấy số ngày phép và tên người quản lý, sau đó tiến hành tạo đơn nghỉ phép tương ứng.",
+    "complexity": "High"
+  },
+  {
+    "id": "TC05",
+    "type": "edge_case_handling",
+    "question": "Hãy tra cứu thông tin nhân sự của nhân viên có mã VF9999999.",
+    "expected_behavior": "Agent nhận kết quả NOT_FOUND từ Tool và đưa ra phản hồi lịch sự, chính xác, không tự bịa đặt dữ liệu (Anti-Hallucination).",
+    "complexity": "Medium"
+  }
+]

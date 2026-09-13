@@ -32,31 +32,66 @@ class MockOfflineProvider(BaseLLMProvider):
         self.model_name = "Offline-Mock-Model-2026"
 
     def generate(self, prompt: str, system_prompt: str = "") -> str:
-        return f"[Mock Chatbot Response]: Xin chào! Tôi đã nhận được câu hỏi '{prompt}'. (Chế độ Chatbot không có Tool tra cứu dữ liệu thời gian thực)."
+        return f"[Mock HR Chatbot Response]: Xin chào! Tôi đã nhận được câu hỏi về nội quy/chính sách nhân sự: '{prompt}'. (Chế độ Chatbot không có quyền truy cập cơ sở dữ liệu nhân sự thời gian thực)."
 
     def generate_with_tools(self, prompt: str, tools_schema: List[Dict[str, Any]], system_prompt: str = "") -> Dict[str, Any]:
         prompt_lower = prompt.lower()
         
-        # Mô phỏng nhận diện intent gọi Tool
-        if "sv2026001" in prompt_lower and "đặt lịch" in prompt_lower:
+        # Mô phỏng nhận diện intent gọi Tool cho VinFast HR
+        if "observation" in prompt_lower or "lịch sử suy luận" in prompt_lower:
+            if "submit_leave_request" in prompt_lower or "mã đơn" in prompt_lower:
+                return {
+                    "type": "text",
+                    "content": "[Mock Agent Response]: Đơn xin nghỉ phép đã được khởi tạo và gửi thành công tới Quản lý trực tiếp để phê duyệt.",
+                    "thought": "Đã hoàn tất quan sát tạo đơn nghỉ phép, trả về kết luận cuối cùng cho nhân viên."
+                }
+            elif "đỗ minh tuấn" in prompt_lower or "lê thị mai" in prompt_lower:
+                return {
+                    "type": "tool_call",
+                    "tool_name": "submit_leave_request",
+                    "arguments": {"employee_id": "VF2026002", "start_date": "25/09/2026", "days_count": 1, "reason": "Nghỉ phép năm cá nhân", "approver_name": "Đỗ Minh Tuấn"},
+                    "thought": "Đã có thông tin quản lý Đỗ Minh Tuấn từ bước tra cứu trước, tiến hành gọi tool submit_leave_request để tạo đơn nghỉ phép."
+                }
+            else:
+                return {
+                    "type": "text",
+                    "content": "[Mock Agent Response]: Đã tra cứu và xử lý thành công yêu cầu từ cơ sở dữ liệu nhân sự VinFast.",
+                    "thought": "Đã hoàn thành quan sát từ MCP Server, trả về kết luận cuối cùng."
+                }
+
+        if "tạo đơn" in prompt_lower or "xin nghỉ" in prompt_lower or "nghỉ phép" in prompt_lower:
+            if "vf2026002" in prompt_lower and "quản lý" in prompt_lower:
+                return {
+                    "type": "tool_call",
+                    "tool_name": "hr_employee_query",
+                    "arguments": {"employee_id": "VF2026002"},
+                    "thought": "Yêu cầu đa bước: Cần tra cứu người quản lý và số ngày phép của nhân viên VF2026002 trước khi nộp đơn."
+                }
+            emp_id = "VF2026002" if "vf2026002" in prompt_lower else "VF2026001"
             return {
                 "type": "tool_call",
-                "tool_name": "schedule_appointment",
-                "arguments": {"student_id": "SV2026001", "datetime_str": "14:00 15/09/2026", "advisor_name": "PGS.TS Nguyễn Văn A"},
-                "thought": "Người dùng yêu cầu đặt lịch hẹn tư vấn cho sinh viên SV2026001. Tôi sẽ gọi tool schedule_appointment."
+                "tool_name": "submit_leave_request",
+                "arguments": {"employee_id": emp_id, "start_date": "20/09/2026", "days_count": 2, "reason": "Việc riêng gia đình"},
+                "thought": f"Người dùng yêu cầu tạo đơn xin nghỉ phép cho nhân viên {emp_id}. Tôi sẽ gọi tool submit_leave_request."
             }
-        elif "sv2026001" in prompt_lower or "tra cứu" in prompt_lower:
+        elif "vf2026001" in prompt_lower or "vf2026002" in prompt_lower or "vf9999999" in prompt_lower or "tra cứu" in prompt_lower:
+            if "vf9999999" in prompt_lower:
+                emp_id = "VF9999999"
+            elif "vf2026002" in prompt_lower:
+                emp_id = "VF2026002"
+            else:
+                emp_id = "VF2026001"
             return {
                 "type": "tool_call",
-                "tool_name": "academic_query",
-                "arguments": {"student_id": "SV2026001"},
-                "thought": "Người dùng muốn tra cứu thông tin học vụ của sinh viên SV2026001. Tôi sẽ gọi tool academic_query."
+                "tool_name": "hr_employee_query",
+                "arguments": {"employee_id": emp_id},
+                "thought": f"Người dùng muốn tra cứu thông tin nhân sự của nhân viên {emp_id}. Tôi sẽ gọi tool hr_employee_query."
             }
         else:
             return {
                 "type": "text",
-                "content": f"[Mock Agent Response]: Xin chào! Quy chế học vụ VinUni yêu cầu sinh viên tích lũy tối thiểu 120 tín chỉ và duy trì GPA trên 2.0 để tốt nghiệp.",
-                "thought": "Câu hỏi chung về quy chế học vụ, trả lời trực tiếp không cần gọi Tool."
+                "content": "[Mock Agent Response]: Quy định chung của VinFast: Khối văn phòng làm việc 44 giờ/tuần; Nhân viên được hưởng 12 ngày phép năm tiêu chuẩn và gói bảo hiểm sức khỏe Vinmec Care.",
+                "thought": "Câu hỏi chung về chính sách nhân sự VinFast, trả lời trực tiếp không cần gọi Tool."
             }
 
 
@@ -64,7 +99,7 @@ class GeminiProvider(BaseLLMProvider):
     """Google Gemini Provider (Native Tool Calling với Google GenAI SDK)"""
     def __init__(self, api_key: str = None, model: str = None):
         self.api_key = api_key or os.getenv("GEMINI_API_KEY")
-        self.model_name = model or os.getenv("LLM_MODEL") or "gemini-2.5-flash"
+        self.model_name = model or os.getenv("LLM_MODEL") or "gemini-3.1-flash-lite"
 
     def generate(self, prompt: str, system_prompt: str = "") -> str:
         if not self.api_key or self.api_key == "your_gemini_api_key_here":
@@ -83,56 +118,63 @@ class GeminiProvider(BaseLLMProvider):
             print("ℹ️ [Gemini Provider]: Chưa tìm thấy GEMINI_API_KEY hợp lệ. Tự động chuyển sang Mock Offline.")
             return MockOfflineProvider().generate_with_tools(prompt, tools_schema, system_prompt)
         
-        try:
-            from google import genai
-            from google.genai import types
+        for attempt in range(3):
+            try:
+                from google import genai
+                from google.genai import types
 
-            client = genai.Client(api_key=self.api_key)
-            
-            # Chuẩn hóa function declarations cho Gemini SDK
-            function_declarations = []
-            for tool in tools_schema:
-                # Bỏ qua các tool schema chưa được định nghĩa hoàn chỉnh
-                if not tool.get("name") or not tool.get("parameters"):
+                client = genai.Client(api_key=self.api_key)
+                
+                # Chuẩn hóa function declarations cho Gemini SDK
+                function_declarations = []
+                for tool in tools_schema:
+                    # Bỏ qua các tool schema chưa được định nghĩa hoàn chỉnh
+                    if not tool.get("name") or not tool.get("parameters"):
+                        continue
+                    function_declarations.append({
+                        "name": tool["name"],
+                        "description": tool.get("description", ""),
+                        "parameters": tool.get("parameters", {})
+                    })
+
+                config = types.GenerateContentConfig(
+                    system_instruction=system_prompt if system_prompt else None,
+                    tools=[{"function_declarations": function_declarations}] if function_declarations else None,
+                    temperature=0.2
+                )
+
+                response = client.models.generate_content(
+                    model=self.model_name,
+                    contents=prompt,
+                    config=config
+                )
+
+                # Kiểm tra xem Gemini có trả về Tool Call không
+                if response.function_calls:
+                    call = response.function_calls[0]
+                    args = dict(call.args) if hasattr(call, 'args') and call.args else {}
+                    return {
+                        "type": "tool_call",
+                        "tool_name": call.name,
+                        "arguments": args,
+                        "thought": f"Gemini quyết định gọi công cụ '{call.name}' với tham số: {json.dumps(args, ensure_ascii=False)}"
+                    }
+                else:
+                    return {
+                        "type": "text",
+                        "content": response.text or "",
+                        "thought": "Gemini phản hồi trực tiếp bằng văn bản (không cần gọi công cụ)."
+                    }
+
+            except Exception as e:
+                err_msg = str(e)
+                if ("429" in err_msg or "RESOURCE_EXHAUSTED" in err_msg) and attempt < 2:
+                    print(f"⏳ [Gemini Rate Limit 429]: Vượt hạn mức gọi (Free Tier). Đang tạm nghỉ 12 giây để reset quota...")
+                    import time
+                    time.sleep(12)
                     continue
-                function_declarations.append({
-                    "name": tool["name"],
-                    "description": tool.get("description", ""),
-                    "parameters": tool.get("parameters", {})
-                })
-
-            config = types.GenerateContentConfig(
-                system_instruction=system_prompt if system_prompt else None,
-                tools=[{"function_declarations": function_declarations}] if function_declarations else None,
-                temperature=0.2
-            )
-
-            response = client.models.generate_content(
-                model=self.model_name,
-                contents=prompt,
-                config=config
-            )
-
-            # Kiểm tra xem Gemini có trả về Tool Call không
-            if response.function_calls:
-                call = response.function_calls[0]
-                args = dict(call.args) if hasattr(call, 'args') and call.args else {}
-                return {
-                    "type": "tool_call",
-                    "tool_name": call.name,
-                    "arguments": args,
-                    "thought": f"Gemini quyết định gọi công cụ '{call.name}' với tham số: {json.dumps(args, ensure_ascii=False)}"
-                }
-            else:
-                return {
-                    "type": "text",
-                    "content": response.text or "",
-                    "thought": "Gemini phản hồi trực tiếp bằng văn bản (không cần gọi công cụ)."
-                }
-
-        except Exception as e:
-            print(f"⚠️ [Gemini API Warning]: Không thể kết nối live API ({str(e)}). Tự động fallback về Mock.")
-            return MockOfflineProvider().generate_with_tools(prompt, tools_schema, system_prompt)
+                print(f"⚠️ [Gemini API Warning]: Không thể kết nối live API ({err_msg}). Tự động fallback về Mock.")
+                return MockOfflineProvider().generate_with_tools(prompt, tools_schema, system_prompt)
 
 
 class OpenAIProvider(BaseLLMProvider):

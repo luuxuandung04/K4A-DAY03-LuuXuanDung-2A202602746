@@ -1,29 +1,182 @@
 [
   {
     "step": 1,
-    "query": "Chào bạn, bạn có thể giới thiệu quy chế học vụ cơ bản của Đại học VinUni không?",
+    "query": "Chào bạn, bạn có thể giới thiệu quy định chung về thời gian làm việc và số ngày phép năm tiêu chuẩn của nhân viên VinFast không?",
     "action_type": "FINAL_ANSWER",
-    "thought": "Câu hỏi chung về quy chế học vụ, trả lời trực tiếp không cần gọi Tool.",
-    "output": "[Mock Agent Response]: Xin chào! Quy chế học vụ VinUni yêu cầu sinh viên tích lũy tối thiểu 120 tín chỉ và duy trì GPA trên 2.0 để tốt nghiệp.",
-    "latency_ms": 2845.93
+    "thought": "Gemini phản hồi trực tiếp bằng văn bản (không cần gọi công cụ).",
+    "output": "Chào bạn, rất vui được hỗ trợ bạn! Dưới đây là thông tin chung về quy định thời gian làm việc và chế độ nghỉ phép tại VinFast:\n\n### 1. Thời gian làm việc\n*   **Thời gian làm việc tiêu chuẩn:** Thông thường là 40 - 48 giờ/tuần (tùy thuộc vào đặc thù công việc và khối văn phòng hay khối sản xuất).\n*   **Giờ làm việc:** Được quy định cụ thể trong Nội quy lao động của Công ty và hợp đồng lao động của từng nhân viên. Các bộ phận có thể có lịch làm việc theo ca hoặc giờ hành chính tùy theo yêu cầu công việc.\n\n### 2. Số ngày phép năm tiêu chuẩn\nTheo quy định của Bộ luật Lao động và chính sách của VinFast, số ngày phép năm tiêu chuẩn được tính như sau:\n*   **12 ngày làm việc/năm:** Áp dụng cho nhân viên làm việc đủ 12 tháng trong điều kiện làm việc bình thường.\n*   **Tăng thêm theo thâm niên:** Cứ đủ 05 năm làm việc cho một người sử dụng lao động, số ngày nghỉ hằng năm của người lao động được tăng thêm tương ứng 01 ngày.\n*   **Điều kiện hưởng:** Nhân viên được hưởng nguyên lương trong những ngày nghỉ phép năm này.\n\n**Lưu ý:**\n*   Số ngày phép thực tế của bạn có thể thay đổi tùy thuộc vào thời gian làm việc thực tế tại công ty và các chính sách bổ sung (nếu có).\n*   Nếu bạn muốn kiểm tra chính xác **số ngày phép năm còn lại** của cá nhân mình, bạn vui lòng cung cấp **Mã nhân viên (Employee ID)**, tôi sẽ hỗ trợ tra cứu thông tin chi tiết từ hệ thống giúp bạn.\n\nNếu bạn cần hỗ trợ thêm về các chính sách khác hoặc muốn nộp đơn xin nghỉ phép, đừng ngần ngại cho tôi biết nhé!",
+    "latency_ms": 3982.47
   },
   {
     "step": 1,
-    "query": "Hãy tra cứu thông tin học vụ của sinh viên SV2026001.",
+    "query": "Hãy tra cứu thông tin nhân sự và số ngày phép còn lại của nhân viên VF2026001.",
     "action_type": "TOOL_EXECUTION",
-    "tool_name": "academic_query",
+    "tool_name": "hr_employee_query",
     "arguments": {
-      "student_id": "SV2026001"
+      "employee_id": "VF2026001"
     },
-    "observation": {},
-    "latency_ms": 799.12
+    "observation": {
+      "status": "SUCCESS",
+      "employee_id": "VF2026001",
+      "data": {
+        "full_name": "Nguyễn Văn An",
+        "department": "Khối Sản xuất Ô tô Điện (Nhà máy Hải Phòng - Xưởng Lắp ráp VF3 & VF8)",
+        "position": "Kỹ sư Tự động hóa Dây chuyền",
+        "annual_leave_remaining": 10,
+        "manager": "Trần Văn Bình",
+        "email": "an.nv@vinfast.vn",
+        "insurance": "Vinmec Care Gold",
+        "status": "Chính thức - Đang làm việc"
+      }
+    },
+    "latency_ms": 3135.84
   },
   {
     "step": 2,
-    "query": "Hãy tra cứu thông tin học vụ của sinh viên SV2026001.",
+    "query": "Hãy tra cứu thông tin nhân sự và số ngày phép còn lại của nhân viên VF2026001.",
     "action_type": "FINAL_ANSWER",
-    "thought": "Tổng hợp kết quả từ MCP Server thành công.",
-    "output": "Chưa thể trả lời chi tiết do chưa nhận được dữ liệu từ MCP Server (hãy hoàn thành TODO 2.1).",
-    "latency_ms": 10.0
+    "thought": "Gemini phản hồi trực tiếp bằng văn bản (không cần gọi công cụ).",
+    "output": "Chào bạn, dưới đây là thông tin chi tiết về hồ sơ nhân sự của nhân viên **VF2026001** mà bạn đã yêu cầu:\n\n*   **Họ và tên:** Nguyễn Văn An\n*   **Phòng ban:** Khối Sản xuất Ô tô Điện (Nhà máy Hải Phòng - Xưởng Lắp ráp VF3 & VF8)\n*   **Chức vụ:** Kỹ sư Tự động hóa Dây chuyền\n*   **Trạng thái làm việc:** Chính thức - Đang làm việc\n*   **Số ngày phép năm còn lại:** 10 ngày\n*   **Người quản lý trực tiếp:** Trần Văn Bình\n*   **Gói bảo hiểm sức khỏe:** Vinmec Care Gold\n*   **Email:** an.nv@vinfast.vn\n\nHy vọng thông tin này hữu ích với bạn. Nếu bạn cần hỗ trợ thêm về việc nộp đơn xin nghỉ phép hoặc các vấn đề nhân sự khác, đừng ngần ngại cho tôi biết nhé!",
+    "latency_ms": 2411.99
+  },
+  {
+    "step": 1,
+    "query": "Tôi muốn tạo đơn xin nghỉ phép năm 2 ngày từ ngày 20/09/2026 cho nhân viên VF2026001 vì lý do việc gia đình.",
+    "action_type": "TOOL_EXECUTION",
+    "tool_name": "hr_employee_query",
+    "arguments": {
+      "employee_id": "VF2026001"
+    },
+    "observation": {
+      "status": "SUCCESS",
+      "employee_id": "VF2026001",
+      "data": {
+        "full_name": "Nguyễn Văn An",
+        "department": "Khối Sản xuất Ô tô Điện (Nhà máy Hải Phòng - Xưởng Lắp ráp VF3 & VF8)",
+        "position": "Kỹ sư Tự động hóa Dây chuyền",
+        "annual_leave_remaining": 10,
+        "manager": "Trần Văn Bình",
+        "email": "an.nv@vinfast.vn",
+        "insurance": "Vinmec Care Gold",
+        "status": "Chính thức - Đang làm việc"
+      }
+    },
+    "latency_ms": 1759.79
+  },
+  {
+    "step": 2,
+    "query": "Tôi muốn tạo đơn xin nghỉ phép năm 2 ngày từ ngày 20/09/2026 cho nhân viên VF2026001 vì lý do việc gia đình.",
+    "action_type": "TOOL_EXECUTION",
+    "tool_name": "submit_leave_request",
+    "arguments": {
+      "employee_id": "VF2026001",
+      "reason": "Việc gia đình",
+      "days_count": 2,
+      "approver_name": "Trần Văn Bình",
+      "start_date": "20/09/2026"
+    },
+    "observation": {
+      "status": "SUCCESS",
+      "request_id": "LR-VF2026001-2026",
+      "employee_id": "VF2026001",
+      "full_name": "Nguyễn Văn An",
+      "start_date": "20/09/2026",
+      "days_count": 2,
+      "reason": "Việc gia đình",
+      "approver": "Trần Văn Bình",
+      "leave_balance_before": 10,
+      "leave_balance_after": 8,
+      "message": "Tạo đơn nghỉ phép thành công (Mã đơn: LR-VF2026001-2026) cho nhân viên Nguyễn Văn An (VF2026001) - Nghỉ 2 ngày kể từ 20/09/2026. Đơn đã chuyển tới Quản lý (Trần Văn Bình) phê duyệt."
+    },
+    "latency_ms": 1390.82
+  },
+  {
+    "step": 3,
+    "query": "Tôi muốn tạo đơn xin nghỉ phép năm 2 ngày từ ngày 20/09/2026 cho nhân viên VF2026001 vì lý do việc gia đình.",
+    "action_type": "FINAL_ANSWER",
+    "thought": "Gemini phản hồi trực tiếp bằng văn bản (không cần gọi công cụ).",
+    "output": "Chào bạn, tôi đã hoàn tất việc tạo đơn xin nghỉ phép cho nhân viên Nguyễn Văn An (VF2026001). Dưới đây là thông tin chi tiết về đơn nghỉ phép của bạn:\n\n*   **Mã đơn:** LR-VF2026001-2026\n*   **Nhân viên:** Nguyễn Văn An\n*   **Ngày bắt đầu nghỉ:** 20/09/2026\n*   **Số ngày nghỉ:** 2 ngày\n*   **Lý do:** Việc gia đình\n*   **Người phê duyệt:** Trần Văn Bình (Quản lý trực tiếp)\n*   **Số ngày phép năm còn lại:** Sau khi trừ 2 ngày nghỉ này, số ngày phép còn lại của bạn là **8 ngày**.\n\nĐơn của bạn đã được gửi thành công tới quản lý Trần Văn Bình để phê duyệt. Nếu cần hỗ trợ thêm bất kỳ thông tin nào khác, bạn vui lòng cho tôi biết nhé!",
+    "latency_ms": 1970.06
+  },
+  {
+    "step": 1,
+    "query": "Nhân viên VF2026002 hiện còn bao nhiêu ngày phép năm và ai là người quản lý trực tiếp? Hãy tra cứu thông tin rồi tạo đơn xin nghỉ phép 1 ngày vào ngày 25/09/2026 gửi cho người quản lý đó.",
+    "action_type": "TOOL_EXECUTION",
+    "tool_name": "hr_employee_query",
+    "arguments": {
+      "employee_id": "VF2026002"
+    },
+    "observation": {
+      "status": "SUCCESS",
+      "employee_id": "VF2026002",
+      "data": {
+        "full_name": "Lê Thị Mai",
+        "department": "Khối R&D Phần mềm Xe Thông minh (Hà Nội - Đội Tự hành ADAS)",
+        "position": "Chuyên viên Phát triển Thuật toán AI",
+        "annual_leave_remaining": 3,
+        "manager": "Đỗ Minh Tuấn",
+        "email": "mai.lt@vinfast.vn",
+        "insurance": "Vinmec Care Platinum",
+        "status": "Chính thức - Đang làm việc"
+      }
+    },
+    "latency_ms": 2368.49
+  },
+  {
+    "step": 2,
+    "query": "Nhân viên VF2026002 hiện còn bao nhiêu ngày phép năm và ai là người quản lý trực tiếp? Hãy tra cứu thông tin rồi tạo đơn xin nghỉ phép 1 ngày vào ngày 25/09/2026 gửi cho người quản lý đó.",
+    "action_type": "TOOL_EXECUTION",
+    "tool_name": "submit_leave_request",
+    "arguments": {
+      "reason": "Việc cá nhân",
+      "employee_id": "VF2026002",
+      "days_count": 1,
+      "start_date": "25/09/2026",
+      "approver_name": "Đỗ Minh Tuấn"
+    },
+    "observation": {
+      "status": "SUCCESS",
+      "request_id": "LR-VF2026002-2026",
+      "employee_id": "VF2026002",
+      "full_name": "Lê Thị Mai",
+      "start_date": "25/09/2026",
+      "days_count": 1,
+      "reason": "Việc cá nhân",
+      "approver": "Đỗ Minh Tuấn",
+      "leave_balance_before": 3,
+      "leave_balance_after": 2,
+      "message": "Tạo đơn nghỉ phép thành công (Mã đơn: LR-VF2026002-2026) cho nhân viên Lê Thị Mai (VF2026002) - Nghỉ 1 ngày kể từ 25/09/2026. Đơn đã chuyển tới Quản lý (Đỗ Minh Tuấn) phê duyệt."
+    },
+    "latency_ms": 1360.8
+  },
+  {
+    "step": 3,
+    "query": "Nhân viên VF2026002 hiện còn bao nhiêu ngày phép năm và ai là người quản lý trực tiếp? Hãy tra cứu thông tin rồi tạo đơn xin nghỉ phép 1 ngày vào ngày 25/09/2026 gửi cho người quản lý đó.",
+    "action_type": "FINAL_ANSWER",
+    "thought": "Gemini phản hồi trực tiếp bằng văn bản (không cần gọi công cụ).",
+    "output": "Chào bạn Lê Thị Mai,\n\nTôi đã hoàn tất việc tra cứu thông tin và thực hiện yêu cầu của bạn. Dưới đây là kết quả chi tiết:\n\n1. **Thông tin nhân sự của bạn:**\n   - **Họ và tên:** Lê Thị Mai\n   - **Số ngày phép năm còn lại:** 3 ngày\n   - **Người quản lý trực tiếp:** Anh Đỗ Minh Tuấn\n\n2. **Kết quả tạo đơn xin nghỉ phép:**\n   - Đơn xin nghỉ phép của bạn đã được gửi thành công.\n   - **Mã đơn:** LR-VF2026002-2026\n   - **Thời gian nghỉ:** 1 ngày (ngày 25/09/2026)\n   - **Lý do:** Việc cá nhân\n   - **Người phê duyệt:** Anh Đỗ Minh Tuấn\n   - **Số ngày phép còn lại sau khi nghỉ:** 2 ngày\n\nĐơn của bạn đã được chuyển đến quản lý trực tiếp để xem xét và phê duyệt. Nếu cần hỗ trợ thêm thông tin gì khác, bạn vui lòng cho tôi biết nhé!",
+    "latency_ms": 3016.08
+  },
+  {
+    "step": 1,
+    "query": "Hãy tra cứu thông tin nhân sự của nhân viên có mã VF9999999.",
+    "action_type": "TOOL_EXECUTION",
+    "tool_name": "hr_employee_query",
+    "arguments": {
+      "employee_id": "VF9999999"
+    },
+    "observation": {
+      "status": "NOT_FOUND",
+      "message": "Không tìm thấy dữ liệu hồ sơ nhân sự cho mã nhân viên 'VF9999999' trong hệ thống VinFast."
+    },
+    "latency_ms": 1614.53
+  },
+  {
+    "step": 2,
+    "query": "Hãy tra cứu thông tin nhân sự của nhân viên có mã VF9999999.",
+    "action_type": "FINAL_ANSWER",
+    "thought": "Gemini phản hồi trực tiếp bằng văn bản (không cần gọi công cụ).",
+    "output": "Chào bạn,\n\nTôi đã thực hiện tra cứu thông tin nhân sự cho mã nhân viên **VF9999999** trong hệ thống của VinFast. Tuy nhiên, kết quả trả về là **không tìm thấy dữ liệu hồ sơ** tương ứng với mã nhân viên này.\n\nBạn vui lòng kiểm tra lại mã nhân viên và thử lại. Nếu bạn vẫn gặp khó khăn, hãy cung cấp lại mã nhân viên chính xác hoặc liên hệ với bộ phận Nhân sự để được hỗ trợ kiểm tra trực tiếp nhé.",
+    "latency_ms": 2753.24
   }
 ]

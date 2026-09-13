@@ -1,6 +1,7 @@
 """
-🛠️ TOOL DEFINITIONS & EXECUTION BACKEND
+🛠️ TOOL DEFINITIONS & EXECUTION BACKEND (VINFAST HR ASSISTANT)
 Mã nguồn chứa danh sách Tool Schemas (JSON Schema) và Execution Layer phục vụ cho MCP Server.
+Đề tài: Trợ lý Nhân sự VinFast (VinFast HR Assistant)
 """
 
 import json
@@ -11,41 +12,55 @@ from typing import Dict, Any
 # ==============================================================================
 
 TOOLS_SCHEMA = [
-    # Tool 1: Đã được định nghĩa mẫu sẵn cho Học viên tham khảo
+    # Tool 1: Tra cứu thông tin hồ sơ nhân sự VinFast
     {
-        "name": "academic_query",
-        "description": "Tra cứu hồ sơ và thông tin học vụ của sinh viên VinUni bằng mã sinh viên.",
+        "name": "hr_employee_query",
+        "description": "Tra cứu thông tin hồ sơ nhân sự của nhân viên VinFast bằng mã nhân viên (bao gồm họ tên, phòng ban, chức vụ, số ngày phép năm còn lại, người quản lý trực tiếp và gói bảo hiểm sức khỏe Vinmec Care).",
         "parameters": {
             "type": "object",
             "properties": {
-                "student_id": {
+                "employee_id": {
                     "type": "string",
-                    "description": "Mã sinh viên cần tra cứu (ví dụ: 'SV2026001')"
+                    "description": "Mã nhân viên VinFast cần tra cứu (ví dụ: 'VF2026001', 'VF2026002')"
                 }
             },
-            "required": ["student_id"]
+            "required": ["employee_id"]
         }
     },
     
     # --------------------------------------------------------------------------
-    # TODO 1.2: HỌC VIÊN HOÀN THIỆN TOOL SCHEMA CHO 'schedule_appointment'
+    # TASK 1.2: HOÀN THIỆN TOOL SCHEMA CHO 'submit_leave_request'
     # 🎯 YÊU CẦU THIẾT KẾ SCHEMA (JSON SCHEMA STANDARD):
-    # 1. Tool dùng để đặt lịch hẹn tư vấn học vụ với Cố vấn học tập VinUni.
-    # 2. Thiết kế các tham số (properties) để LLM trích xuất:
-    #    - student_id (string): Mã sinh viên cần đặt lịch (ví dụ: 'SV2026001')
-    #    - datetime_str (string): Thời gian hẹn (ví dụ: '14:00 15/09/2026')
-    #    - advisor_name (string): Tên cố vấn học tập
-    # 3. Khai báo danh sách các trường bắt buộc (required).
+    # Tool dùng để nộp đơn xin nghỉ phép cho nhân viên VinFast.
     # --------------------------------------------------------------------------
     {
-        "name": "schedule_appointment",
-        "description": "Đặt lịch hẹn tư vấn học vụ với Cố vấn học tập VinUni.",
+        "name": "submit_leave_request",
+        "description": "Tạo và gửi đơn xin nghỉ phép năm/nghỉ việc riêng cho nhân viên VinFast tới Quản lý trực tiếp để phê duyệt.",
         "parameters": {
             "type": "object",
             "properties": {
-                # TODO 1.2: Khai báo các thuộc tính tham số cho Tool tại đây...
+                "employee_id": {
+                    "type": "string",
+                    "description": "Mã nhân viên nộp đơn xin nghỉ phép (ví dụ: 'VF2026001')"
+                },
+                "start_date": {
+                    "type": "string",
+                    "description": "Ngày bắt đầu nghỉ phép (định dạng DD/MM/YYYY hoặc chuỗi ngày, ví dụ: '20/09/2026')"
+                },
+                "days_count": {
+                    "type": "integer",
+                    "description": "Số ngày đăng ký nghỉ phép (ví dụ: 1, 2)"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Lý do xin nghỉ phép (ví dụ: 'Việc cá nhân', 'Nghỉ du lịch gia đình')"
+                },
+                "approver_name": {
+                    "type": "string",
+                    "description": "Tên người quản lý phê duyệt đơn (không bắt buộc, nếu có)"
+                }
             },
-            "required": [] # TODO 1.2: Khai báo danh sách các trường bắt buộc tại đây...
+            "required": ["employee_id", "start_date", "days_count", "reason"]
         }
     }
 ]
@@ -55,57 +70,104 @@ TOOLS_SCHEMA = [
 # ==============================================================================
 
 MOCK_DATABASE = {
-    "SV2026001": {
+    "VF2026001": {
         "full_name": "Nguyễn Văn An",
-        "class": "AI-K4",
-        "gpa": 3.85,
-        "email": "an.nv@vinuni.edu.vn",
-        "status": "Đang học",
-        "advisor": "PGS.TS Nguyễn Văn A"
+        "department": "Khối Sản xuất Ô tô Điện (Nhà máy Hải Phòng - Xưởng Lắp ráp VF3 & VF8)",
+        "position": "Kỹ sư Tự động hóa Dây chuyền",
+        "annual_leave_remaining": 10,
+        "manager": "Trần Văn Bình",
+        "email": "an.nv@vinfast.vn",
+        "insurance": "Vinmec Care Gold",
+        "status": "Chính thức - Đang làm việc"
     },
-    "SV2026002": {
-        "full_name": "Trần Thị Bình",
-        "class": "AI-K4",
-        "gpa": 3.60,
-        "email": "binh.tt@vinuni.edu.vn",
-        "status": "Đang học",
-        "advisor": "TS. Lê Thị B"
+    "VF2026002": {
+        "full_name": "Lê Thị Mai",
+        "department": "Khối R&D Phần mềm Xe Thông minh (Hà Nội - Đội Tự hành ADAS)",
+        "position": "Chuyên viên Phát triển Thuật toán AI",
+        "annual_leave_remaining": 3,
+        "manager": "Đỗ Minh Tuấn",
+        "email": "mai.lt@vinfast.vn",
+        "insurance": "Vinmec Care Platinum",
+        "status": "Chính thức - Đang làm việc"
     }
 }
 
 
-def execute_academic_query(student_id: str) -> str:
-    """Thực thi tra cứu học vụ theo mã sinh viên"""
-    student = MOCK_DATABASE.get(student_id.strip().upper())
-    if student:
+def execute_hr_employee_query(employee_id: str) -> str:
+    """Thực thi tra cứu thông tin nhân sự VinFast theo mã nhân viên"""
+    clean_id = employee_id.strip().upper()
+    emp = MOCK_DATABASE.get(clean_id)
+    if emp:
         return json.dumps({
             "status": "SUCCESS",
-            "student_id": student_id,
-            "data": student
+            "employee_id": clean_id,
+            "data": emp
         }, ensure_ascii=False)
     else:
         return json.dumps({
             "status": "NOT_FOUND",
-            "message": f"Không tìm thấy dữ liệu sinh viên có mã '{student_id}'"
+            "message": f"Không tìm thấy dữ liệu hồ sơ nhân sự cho mã nhân viên '{employee_id}' trong hệ thống VinFast."
         }, ensure_ascii=False)
 
 
-def execute_schedule_appointment(student_id: str, datetime_str: str, advisor_name: str = "PGS.TS Nguyễn Văn A") -> str:
-    """Thực thi đặt lịch hẹn tư vấn học vụ"""
+def execute_submit_leave_request(
+    employee_id: str,
+    start_date: str,
+    days_count: int = 1,
+    reason: str = "Việc riêng cá nhân",
+    approver_name: str = ""
+) -> str:
+    """Thực thi tạo đơn xin nghỉ phép nhân viên VinFast"""
+    clean_id = employee_id.strip().upper()
+    emp = MOCK_DATABASE.get(clean_id)
+    
+    try:
+        days_num = int(days_count)
+    except (ValueError, TypeError):
+        days_num = 1
+
+    if not emp:
+        return json.dumps({
+            "status": "NOT_FOUND",
+            "message": f"Không thể tạo đơn nghỉ phép do mã nhân viên '{employee_id}' không tồn tại trên hệ thống VinFast."
+        }, ensure_ascii=False)
+
+    leave_remaining = emp.get("annual_leave_remaining", 0)
+    manager = approver_name if approver_name else emp.get("manager", "Phòng Nhân sự VinFast")
+
+    if days_num > leave_remaining:
+        return json.dumps({
+            "status": "REJECTED",
+            "employee_id": clean_id,
+            "full_name": emp["full_name"],
+            "requested_days": days_num,
+            "available_days": leave_remaining,
+            "message": f"Từ chối tạo đơn: Số ngày xin nghỉ ({days_num} ngày) vượt quá số ngày phép còn lại ({leave_remaining} ngày) của nhân viên {emp['full_name']}."
+        }, ensure_ascii=False)
+
+    request_id = f"LR-{clean_id}-2026"
     return json.dumps({
         "status": "SUCCESS",
-        "booking_id": f"BK-{student_id}-99",
-        "student_id": student_id,
-        "datetime": datetime_str,
-        "advisor": advisor_name,
-        "message": f"Đặt lịch thành công cho sinh viên {student_id} với {advisor_name} vào lúc {datetime_str}."
+        "request_id": request_id,
+        "employee_id": clean_id,
+        "full_name": emp["full_name"],
+        "start_date": start_date,
+        "days_count": days_num,
+        "reason": reason,
+        "approver": manager,
+        "leave_balance_before": leave_remaining,
+        "leave_balance_after": leave_remaining - days_num,
+        "message": f"Tạo đơn nghỉ phép thành công (Mã đơn: {request_id}) cho nhân viên {emp['full_name']} ({clean_id}) - Nghỉ {days_num} ngày kể từ {start_date}. Đơn đã chuyển tới Quản lý ({manager}) phê duyệt."
     }, ensure_ascii=False)
 
 
 # Router gọi tool thực tế
 TOOL_ROUTER = {
-    "academic_query": execute_academic_query,
-    "schedule_appointment": execute_schedule_appointment
+    "hr_employee_query": execute_hr_employee_query,
+    "submit_leave_request": execute_submit_leave_request,
+    # Alias tương thích ngược
+    "academic_query": execute_hr_employee_query,
+    "schedule_appointment": execute_submit_leave_request
 }
 
 def dispatch_tool_call(tool_name: str, arguments: Dict[str, Any]) -> str:
